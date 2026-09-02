@@ -1,0 +1,28 @@
+name: Feature request
+description: Propose a change or capability
+title: "[FEATURE] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem / business need
+    validations:
+      required: true
+
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Desired outcome
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencies / risks
