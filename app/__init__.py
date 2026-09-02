@@ -6,7 +6,7 @@ def create_app() -> Flask:
 
     @app.get("/")
     def hello():
-        return "Hello Wrld", 200
+        return "Hello World", 200
 
     @app.get("/health")
     def health():
