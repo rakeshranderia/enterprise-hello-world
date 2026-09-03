@@ -2,159 +2,192 @@
 
 > **The application is intentionally simple. The delivery lifecycle is not.**
 
-Enterprise Hello World is a deliberately small Python web service used to demonstrate an end-to-end technology delivery lifecycle:
+Enterprise Hello World is a deliberately small Flask application used to demonstrate a complete software delivery lifecycle without allowing application complexity to obscure the delivery practices around it.
 
-**Idea → Requirement → Backlog → Build → Test → UAT → CI → IaC → Release → Cutover → Hypercare → Incident → PIR → BAU**
+The application itself does two things:
 
-The point of this repository is not the complexity of the application. The point is to show how a simple change can be governed, tested, released, supported and improved using practical engineering and delivery controls.
+- `/` returns `Hello World`
+- `/health` returns a simple JSON health response
 
-## What the Application Does
+The surrounding repository demonstrates requirements, source control, automated testing, CI, Infrastructure as Code, UAT, release governance, operational readiness, hypercare, incident handling and BAU transition.
 
-The service exposes two endpoints:
+## Live demonstration
 
-- `/` — returns `Hello World`
-- `/health` — returns a simple health response
+**Application**  
+https://enterprise-hello-world.onrender.com/
 
-That is all the application needs to do.
+**Health endpoint**  
+https://enterprise-hello-world.onrender.com/health
 
-## What the Project Demonstrates
+> **Demo hosting note**
+>
+> The live demonstration is hosted on Render's free service tier. After a period of inactivity the service may spin down, so the first request can take up to approximately 60 seconds while the instance starts. Subsequent requests should respond normally.
+>
+> This cold-start delay is expected platform behaviour and does not, by itself, indicate an application incident.
 
-- requirements and user stories;
-- acceptance criteria and non-functional requirements;
-- architecture decision records;
-- Git branching and pull-request workflow;
-- automated unit testing;
-- linting and lightweight security checks;
-- CI with GitHub Actions;
-- Infrastructure as Code using Azure Bicep;
-- UAT planning and evidence;
-- release readiness;
-- cutover and rollback planning;
-- go-live and hypercare;
-- operational acceptance;
-- BAU handover;
-- incident communications;
-- post-incident review;
-- technical debt and decision logging;
-- documentation and user training.
+## What this project demonstrates
 
-## Repository Structure
+- requirements and acceptance criteria
+- GitHub Issues and GitHub Projects
+- source control and branch-based development
+- automated unit testing
+- GitHub Actions CI
+- security scanning
+- Azure Bicep as an Infrastructure as Code reference
+- public application deployment
+- User Acceptance Testing
+- release readiness and cutover
+- operational runbooks and monitoring
+- hypercare
+- defect and incident management
+- Post-Incident Review
+- BAU handover
+
+## Technology
+
+- Python
+- Flask
+- Gunicorn
+- pytest
+- GitHub
+- GitHub Actions
+- Dependabot
+- Bandit
+- Bicep
+- Render
+
+The repository includes an Azure App Service Bicep reference implementation. The current live demonstration environment is hosted on Render.
+
+## Application behaviour
+
+### Root endpoint
 
 ```text
-enterprise-hello-world/
-├── app/                        # Tiny Python web service
-├── tests/                      # Automated tests
-├── infrastructure/
-│   └── bicep/                  # Demonstration Azure IaC
-├── docs/
-│   ├── 01-discovery/           # Problem, scope, user story, requirements
-│   ├── 02-architecture/        # Architecture and ADRs
-│   ├── 03-delivery/            # Backlog, DoD, decisions, project board
-│   ├── 04-testing/             # Test plan, test cases, UAT
-│   ├── 05-release/             # Release readiness, cutover, rollback
-│   ├── 06-training/            # User and support guides
-│   ├── 07-operations/          # Runbook, monitoring, BAU handover
-│   ├── 08-incident/            # Incident update and PIR examples
-│   └── 09-lessons/             # Lessons learned
-├── .github/
-│   ├── workflows/              # CI and IaC validation
-│   ├── ISSUE_TEMPLATE/         # Feature / bug templates
-│   └── pull_request_template.md
-├── CHANGELOG.md
-├── CONTRIBUTING.md
-├── SECURITY.md
-└── README.md
+GET /
 ```
 
-## Local Run
+Expected result:
+
+```text
+Hello World
+```
+
+Expected HTTP status: `200`
+
+### Health endpoint
+
+```text
+GET /health
+```
+
+Expected result:
+
+```json
+{
+  "service": "enterprise-hello-world",
+  "status": "healthy"
+}
+```
+
+Expected HTTP status: `200`
+
+## Delivery lifecycle
+
+```text
+Requirement
+    ↓
+Design
+    ↓
+Development
+    ↓
+Source Control
+    ↓
+Automated Testing / CI
+    ↓
+UAT
+    ↓
+Release Readiness
+    ↓
+Go-Live
+    ↓
+Hypercare
+    ↓
+Incident / Defect Management
+    ↓
+Post-Incident Review
+    ↓
+BAU Transition
+```
+
+The GitHub Project board tracks this lifecycle using:
+
+```text
+Backlog → Ready → In Progress → Review / Test → Ready for Release → Hypercare → Done
+```
+
+## Current status
+
+The engineering baseline has been completed:
+
+- acceptance criteria defined
+- Hello World endpoint implemented
+- health endpoint implemented
+- automated unit tests implemented
+- CI workflow implemented
+- security scanning implemented
+- Infrastructure as Code reference created
+- public demonstration environment deployed
+
+UAT has been executed successfully against the live Render environment. Release-readiness activities follow next.
+
+## Running locally
 
 ```bash
+git clone https://github.com/rakeshranderia/enterprise-hello-world.git
+cd enterprise-hello-world
 python -m venv .venv
-
-# Windows
-.venv\Scripts\activate
-
-# macOS / Linux
-source .venv/bin/activate
-
 pip install -r requirements.txt
+pip install -r requirements-dev.txt
 python -m app
 ```
 
-Open:
+Local endpoints:
 
 ```text
 http://127.0.0.1:5000/
-```
-
-Health endpoint:
-
-```text
 http://127.0.0.1:5000/health
 ```
 
-## Run Tests
+## Hosted runtime
 
-```bash
-pip install -r requirements-dev.txt
-pytest -q
+The live service currently uses:
+
+```text
+Branch: main
+Runtime: Python 3
+Build command: pip install -r requirements.txt
+Start command: gunicorn "app:create_app()"
 ```
 
-## Delivery Lifecycle
+See [`docs/hosting-and-runtime.md`](docs/hosting-and-runtime.md) for the hosting model and known platform behaviour.
 
-The project documentation is designed to be followed in order:
+## UAT
 
-1. [`Problem Statement`](docs/01-discovery/problem-statement.md)
-2. [`Scope & Success Criteria`](docs/01-discovery/scope-and-success.md)
-3. [`User Story`](docs/01-discovery/user-story.md)
-4. [`Non-Functional Requirements`](docs/01-discovery/non-functional-requirements.md)
-5. [`Architecture`](docs/02-architecture/architecture.md)
-6. [`Architecture Decision Record`](docs/02-architecture/ADR-001-python-flask.md)
-7. [`GitHub Project Setup`](docs/03-delivery/github-project-setup.md)
-8. [`Backlog`](docs/03-delivery/backlog.md)
-9. [`Definition of Done`](docs/03-delivery/definition-of-done.md)
-10. [`Test Plan`](docs/04-testing/test-plan.md)
-11. [`UAT Plan`](docs/04-testing/uat-plan.md)
-12. [`Release Readiness`](docs/05-release/release-readiness.md)
-13. [`Cutover Plan`](docs/05-release/cutover-plan.md)
-14. [`Training`](docs/06-training/user-guide.md)
-15. [`Operational Runbook`](docs/07-operations/operational-runbook.md)
-16. [`Hypercare`](docs/07-operations/hypercare-plan.md)
-17. [`Incident Simulation`](docs/08-incident/incident-simulation.md)
-18. [`Post-Incident Review`](docs/08-incident/post-incident-review.md)
-19. [`BAU Handover`](docs/07-operations/bau-handover.md)
-20. [`Lessons Learned`](docs/09-lessons/lessons-learned.md)
+The deployed service is validated against the agreed acceptance criteria:
 
-## GitHub Demonstration Scenario
+- `/` returns HTTP 200 and `Hello World`
+- `/health` returns HTTP 200 and reports `status: healthy`
 
-This repository intentionally does **not** manufacture history.
+See [`docs/live-uat.md`](docs/live-uat.md) for the current UAT record.
 
-Instead, follow [`docs/03-delivery/demo-scenario.md`](docs/03-delivery/demo-scenario.md) to create real:
+## Documentation
 
-- issues;
-- branches;
-- pull requests;
-- CI runs;
-- an intentional defect;
-- a bug fix;
-- a release;
-- a hypercare incident;
-- project-board movement.
+Detailed delivery material is maintained under `docs/`, including requirements, architecture, testing, UAT, release readiness, cutover, hypercare, incident review and operational transition.
 
-That produces an authentic project history.
+The documentation is deliberately more extensive than the application itself.
 
-## Infrastructure as Code
+## Delivery principle
 
-[`infrastructure/bicep/main.bicep`](infrastructure/bicep/main.bicep) defines a small Azure App Service architecture as a demonstration of:
+> **Simple application. Serious delivery discipline.**
 
-**Desired State → Version Control → Validate → Review → Deploy → Evidence**
-
-The CI workflow validates that the Bicep file can compile. Deployment is intentionally not automatic because this public demonstration repository does not require cloud credentials or paid Azure resources.
-
-## Key Principle
-
-A trivial application can still demonstrate serious delivery discipline.
-
-The value of this repository is the complete operating model around the code:
-
-**Requirement → Delivery → Control → Evidence → Operation → Improvement**
+This repository is a demonstration and learning project. The application, infrastructure and operational scenarios are intentionally simplified and should not be treated as production architecture without appropriate design, security, resilience, cost and operational assessment.
