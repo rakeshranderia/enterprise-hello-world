@@ -6,11 +6,25 @@ The format follows a simple versioned release model.
 
 ## [Unreleased]
 
+### Added
+
+- Public API overview endpoint at `/api`.
+- Public application-status endpoint at `/api/status`.
+- Public project-list endpoint at `/api/projects`.
+- Automated tests covering the new API endpoints.
+- Postman collection for validating the live Render deployment.
+- API evolution and hosting documentation.
+
+### Changed
+
+- Extended the project from a simple web application into an API-enabled delivery demonstration while preserving the existing root and health endpoint contracts.
+- Expanded README documentation to include the API surface and Postman validation workflow.
+
 ### Planned
 
-- Create the initial GitHub Project board.
-- Complete the guided defect lifecycle.
-- Create the first tagged release.
+- Complete live UAT against the API-enabled Render deployment.
+- Publish the Postman collection only after live endpoint validation.
+- Create the first tagged release after the guided delivery scenario is complete.
 
 ## [1.0.0] - Planned
 

@@ -4,12 +4,7 @@
 
 Enterprise Hello World is a deliberately small Flask application used to demonstrate a complete software delivery lifecycle without allowing application complexity to obscure the delivery practices around it.
 
-The application itself does two things:
-
-- `/` returns `Hello World`
-- `/health` returns a simple JSON health response
-
-The surrounding repository demonstrates requirements, source control, automated testing, CI, Infrastructure as Code, UAT, release governance, operational readiness, hypercare, incident handling and BAU transition.
+The project now also includes a small public API surface. This deliberately extends the original lifecycle demonstration without turning the repository into a large application.
 
 ## Live demonstration
 
@@ -19,11 +14,80 @@ https://enterprise-hello-world.onrender.com/
 **Health endpoint**  
 https://enterprise-hello-world.onrender.com/health
 
+**API overview**  
+https://enterprise-hello-world.onrender.com/api
+
+**API status**  
+https://enterprise-hello-world.onrender.com/api/status
+
+**Projects API**  
+https://enterprise-hello-world.onrender.com/api/projects
+
 > **Demo hosting note**
 >
 > The live demonstration is hosted on Render's free service tier. After a period of inactivity the service may spin down, so the first request can take up to approximately 60 seconds while the instance starts. Subsequent requests should respond normally.
 >
 > This cold-start delay is expected platform behaviour and does not, by itself, indicate an application incident.
+
+## Application behaviour
+
+### Root
+
+`GET /`
+
+Returns:
+
+```text
+Hello World
+```
+
+### Health
+
+`GET /health`
+
+```json
+{
+  "service": "enterprise-hello-world",
+  "status": "healthy"
+}
+```
+
+### API overview
+
+`GET /api`
+
+Returns API metadata and the available API paths.
+
+### API status
+
+`GET /api/status`
+
+Returns the application version, operating state, runtime and hosting platform.
+
+### Projects
+
+`GET /api/projects`
+
+Returns a small set of public engineering projects. It exists to demonstrate a real JSON API response that can be consumed and tested using tools such as Postman.
+
+## Why the API was added
+
+The original application demonstrated a disciplined software-delivery lifecycle around a deliberately simple application.
+
+Version 2 extends the same project into API delivery while preserving the principle:
+
+> **Simple application. Serious delivery discipline.**
+
+This evolution demonstrates:
+
+- incremental application change
+- backwards-compatible endpoint design
+- REST-style JSON endpoints
+- automated API testing
+- deployment through the existing GitHub → Render flow
+- health and status separation
+- external API consumption using Postman
+- change documentation and release validation
 
 ## What this project demonstrates
 
@@ -35,6 +99,8 @@ https://enterprise-hello-world.onrender.com/health
 - security scanning
 - Azure Bicep as an Infrastructure as Code reference
 - public application deployment
+- REST-style API delivery
+- Postman API validation
 - User Acceptance Testing
 - release readiness and cutover
 - operational runbooks and monitoring
@@ -55,41 +121,9 @@ https://enterprise-hello-world.onrender.com/health
 - Bandit
 - Bicep
 - Render
+- Postman
 
 The repository includes an Azure App Service Bicep reference implementation. The current live demonstration environment is hosted on Render.
-
-## Application behaviour
-
-### Root endpoint
-
-```text
-GET /
-```
-
-Expected result:
-
-```text
-Hello World
-```
-
-Expected HTTP status: `200`
-
-### Health endpoint
-
-```text
-GET /health
-```
-
-Expected result:
-
-```json
-{
-  "service": "enterprise-hello-world",
-  "status": "healthy"
-}
-```
-
-Expected HTTP status: `200`
 
 ## Delivery lifecycle
 
@@ -125,21 +159,6 @@ The GitHub Project board tracks this lifecycle using:
 Backlog → Ready → In Progress → Review / Test → Ready for Release → Hypercare → Done
 ```
 
-## Current status
-
-The engineering baseline has been completed:
-
-- acceptance criteria defined
-- Hello World endpoint implemented
-- health endpoint implemented
-- automated unit tests implemented
-- CI workflow implemented
-- security scanning implemented
-- Infrastructure as Code reference created
-- public demonstration environment deployed
-
-UAT has been executed successfully against the live Render environment. Release-readiness activities follow next.
-
 ## Running locally
 
 ```bash
@@ -156,11 +175,14 @@ Local endpoints:
 ```text
 http://127.0.0.1:5000/
 http://127.0.0.1:5000/health
+http://127.0.0.1:5000/api
+http://127.0.0.1:5000/api/status
+http://127.0.0.1:5000/api/projects
 ```
 
 ## Hosted runtime
 
-The live service currently uses:
+The live service continues to use:
 
 ```text
 Branch: main
@@ -169,16 +191,25 @@ Build command: pip install -r requirements.txt
 Start command: gunicorn "app:create_app()"
 ```
 
+No Render configuration change is required for this version.
+
 See [`docs/hosting-and-runtime.md`](docs/hosting-and-runtime.md) for the hosting model and known platform behaviour.
 
-## UAT
+## API validation
 
-The deployed service is validated against the agreed acceptance criteria:
+A Postman collection is included under:
 
-- `/` returns HTTP 200 and `Hello World`
-- `/health` returns HTTP 200 and reports `status: healthy`
+```text
+postman/enterprise-hello-world.postman_collection.json
+```
 
-See [`docs/live-uat.md`](docs/live-uat.md) for the current UAT record.
+The collection defaults to the live Render base URL and contains requests for:
+
+- root
+- health
+- API overview
+- API status
+- projects
 
 ## Documentation
 
