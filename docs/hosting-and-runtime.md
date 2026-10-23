@@ -12,6 +12,15 @@ https://enterprise-hello-world.onrender.com/
 **Health endpoint**  
 https://enterprise-hello-world.onrender.com/health
 
+**API overview**  
+https://enterprise-hello-world.onrender.com/api
+
+**API status**  
+https://enterprise-hello-world.onrender.com/api/status
+
+**Projects API**  
+https://enterprise-hello-world.onrender.com/api/projects
+
 ## Runtime configuration
 
 ```text
@@ -21,7 +30,7 @@ Build command: pip install -r requirements.txt
 Start command: gunicorn "app:create_app()"
 ```
 
-Gunicorn is used for the hosted runtime rather than the Flask development server. The Flask application uses an application factory defined in `app/__init__.py`.
+No Render runtime or build change is required for the API evolution. The new endpoints are delivered by the existing Flask application factory and therefore use the same Gunicorn start command.
 
 ## Known free-tier behaviour
 
@@ -36,9 +45,11 @@ Expected behaviour:
 - a cold-start delay alone should not be treated as an application incident
 - once the service has started, `/health` should be checked before escalating an availability or performance issue
 
-## Health validation
+## Health and application status
 
-Expected `GET /health` result:
+`/health` is the lightweight availability endpoint.
+
+Expected result:
 
 ```json
 {
@@ -47,7 +58,19 @@ Expected `GET /health` result:
 }
 ```
 
-Expected HTTP status: `200`
+`/api/status` is the public application-status endpoint. It intentionally provides a little more context:
+
+```json
+{
+  "hosting": "Render",
+  "runtime": "Flask + Gunicorn",
+  "service": "enterprise-hello-world",
+  "status": "operational",
+  "version": "2.0"
+}
+```
+
+The separation allows a lightweight health check to remain stable while the public status representation can evolve.
 
 ## Infrastructure as Code
 
@@ -62,4 +85,4 @@ The Bicep files demonstrate an Infrastructure as Code pattern but are not curren
 
 A successful platform deployment is not, by itself, sufficient evidence of a successful release.
 
-The deployed service should also be validated through root endpoint validation, health endpoint validation, UAT, release-readiness checks and post-release monitoring.
+The deployed service should also be validated through root endpoint validation, health endpoint validation, API endpoint validation, automated tests, UAT, release-readiness checks and post-release monitoring.
